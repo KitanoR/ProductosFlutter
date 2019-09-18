@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:form/src/bloc/provider.dart';
+import 'package:form/src/providers/usuario_provider.dart';
+import 'package:form/src/utils/utils.dart';
 
 class RegistroPage extends StatelessWidget {
+
+  final usuarioProvider = new UsuarioProvider();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +108,7 @@ class RegistroPage extends StatelessWidget {
           ),
           FlatButton(
             child: Text('¿Ya tienes cuenta? Login'),
-            onPressed: () => Navigator.pushReplacementNamed(context, 'Registrar')
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login')
           ),
           SizedBox(height: 100.0,)
         
@@ -175,17 +179,21 @@ class RegistroPage extends StatelessWidget {
           elevation: 0.0,
           color:  Colors.deepPurpleAccent,
           textColor: Colors.white,
-          onPressed: snapshot.hasData ? () => _login(bloc, context): null,
+          onPressed: snapshot.hasData ? () => _register(bloc, context): null,
         );
       },
     );
     
   }
 
-  _login(LoginBloc block, BuildContext context){
-    print("==============================");
-    print('Email: ${block.email}');
-    print('Password: ${block.password}');
-    Navigator.pushReplacementNamed(context, 'home');
+  _register(LoginBloc block, BuildContext context) async {
+
+      Map info = await usuarioProvider.nuevoUsuario(block.email, block.password);
+      if(info['ok']){
+        Navigator.pushReplacementNamed(context, 'home');
+      }else {
+        mostrarAlerta(context, info['mensaje']);
+      }
+   // Navigator.pushReplacementNamed(context, 'home');
   }
 }
