@@ -34,6 +34,7 @@ class ProductosProvider {
     final List<ProductoModel> productos = new List();
     if(decodedData == null ) return [];
 
+    if(decodedData['error'] != null) return [];
     decodedData.forEach((id, prod) {
       final prodTem = ProductoModel.fromJson(prod);
       prodTem.id = id;
